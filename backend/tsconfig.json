@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true, // For importing JSON files
+    "forceConsistentCasingInFileNames": true, // Ensures consistent casing
+    "noEmitOnError": true, // Prevent output on errors
+    "experimentalDecorators": true, // Support for decorators
+    "lib": [
+      "es2020"
+    ] // Include the ES2020 library features
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
