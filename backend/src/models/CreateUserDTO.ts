@@ -3,6 +3,12 @@ export interface CreateUserDTO {
   name: string;
   email: string;
   password: string;
-  lat: number;
-  long: number;
+  contact: string;
+  image: string | null;
+
+}
+
+export interface LoginUserDTO {
+  email: string;
+  password: string;
 }

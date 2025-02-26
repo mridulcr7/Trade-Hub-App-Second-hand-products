@@ -3,8 +3,8 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  lat: number;
-  long: number;
+  contact: string;
+  image: string | null;
   created_at?: Date;
   updated_at?: Date;
 }
