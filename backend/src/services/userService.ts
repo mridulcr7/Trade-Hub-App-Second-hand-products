@@ -73,6 +73,13 @@ export const updateProfileService = async (userId: number, updateData: any) => {
     throw new CustomError("User not found", 400);
   }
 
+  if (updateData.contact) {
+    const contactExists = await createUserRepo.isContactExists(updateData.contact, userId);
+    if (contactExists) {
+      throw new CustomError("Contact number already exists.", 400);
+    }
+  }
+
   const updatedUser = await createUserRepo.update(userId, updateData);
   return updatedUser;
 };

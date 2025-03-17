@@ -22,21 +22,23 @@ export const addProduct = async (req: Request, res: Response): Promise<void> => 
 
 export const getAllProductsController = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { category, lat, long, userId } = req.body;
-    console.log(userId)
+    const { category, lat, long, userId, page = 1, limit = 3 } = req.body; // Default page = 1, limit = 3
+
+    console.log("mridii");
 
     if (!lat || !long || !category) {
       res.status(400).json({ message: "Latitude, longitude, and category are required" });
       return;
     }
 
-    const products = await getAllProducts(lat, long, category, userId);
+    const products = await getAllProducts(lat, long, category, userId, Number(page), Number(limit));
     res.status(200).json(products);
   } catch (error) {
-    console.error('Error in getAllProductsController:', error);
-    res.status(500).json({ message: 'An error occurred while fetching products', error });
+    console.error("Error in getAllProductsController:", error);
+    res.status(500).json({ message: "An error occurred while fetching products", error });
   }
 };
+
 
 export const getProductByIdController = async (req: Request, res: Response): Promise<void> => {
   try {

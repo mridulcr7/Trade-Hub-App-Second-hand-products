@@ -62,6 +62,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
     console.log(id)
     try {
         const userdetails = await getProfileService(id);
+        console.log(userdetails)
         res.status(200).json(userdetails)
 
     }
@@ -97,7 +98,11 @@ export const updateUserProfile = async (req: Request, res: Response) => {
         const updatedUser = await updateProfileService(userId, updateData);
         res.status(200).json(updatedUser);
     } catch (error) {
-        console.error("Error updating user profile:", error);
-        res.status(500).json({ message: "Unable to update profile." });
+        if (error instanceof CustomError) {
+            console.log(error.statusCode)
+            res.status(error.statusCode).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "Internal Server Error" });
+        }
     }
 };

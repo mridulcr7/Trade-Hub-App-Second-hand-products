@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Product {
     id: string;
@@ -14,10 +14,35 @@ interface Product {
     verification_status: string;
 }
 
+const fetchProduct = async (productId: string) => {
+    const response = await axios.get(`http://localhost:5000/product/${productId}`);
+    return response.data.product;
+};
+
+const updateProduct = async (updatedFields: any) => {
+    const token = localStorage.getItem("authToken");
+    if (!token) throw new Error("User not authenticated.");
+
+    return axios.put("http://localhost:5000/product/update", updatedFields, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 const EditProduct: React.FC = () => {
     const { productId } = useParams<{ productId: string }>();
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
-    const [originalProduct, setOriginalProduct] = useState<Product | null>(null);  // To store the original product data
+    // Fetch product data
+    const { data: originalProduct, isLoading, isError } = useQuery({
+        queryKey: ["product", productId],
+        queryFn: () => fetchProduct(productId!),
+    });
+
+    // Form state
     const [price, setPrice] = useState<string>("");
     const [status, setStatus] = useState<string>("unsold");
     const [verification, setVerification] = useState<string>("");
@@ -27,34 +52,43 @@ const EditProduct: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState<string>("");
     const [successMessage, setSuccessMessage] = useState<string>("");
 
-    const navigate = useNavigate();
-
+    // Update state when data is loaded
     useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const response = await fetch(`http://localhost:5000/product/${productId}`);
-                const data = await response.json();
+        if (originalProduct) {
+            setPrice(originalProduct.price.toString());
+            setStatus(originalProduct.status);
+            setVerification(originalProduct.verification_status);
+            setLatitude(originalProduct.latitude);
+            setLongitude(originalProduct.longitude);
+        }
+    }, [originalProduct]);
 
-                if (data.product) {
-                    setOriginalProduct(data.product);
-                    setPrice(data.product.price.toString());
-                    setStatus(data.product.status);
-                    setLatitude(data.product.latitude);
-                    setLongitude(data.product.longitude);
-                    setVerification(data.product.verification_status);
-                }
-            } catch (error) {
-                setErrorMessage("Error fetching product details.");
+    // Update product mutation
+    const mutation = useMutation({
+        mutationFn: updateProduct,
+        onSuccess: () => {
+            setSuccessMessage("✅ Product updated successfully!");
+            queryClient.invalidateQueries({ queryKey: ["product", productId] });
+            setTimeout(() => {
+                navigate("/view-added-products");
+            }, 2000);
+        },
+        onError: (error: any) => {
+            if (axios.isAxiosError(error)) {
+                const backendMessage = error.response?.data?.message || "An unexpected error occurred.";
+                setErrorMessage(`❌ ${backendMessage}`);
+            } else {
+                setErrorMessage("❌ Something went wrong. Please try again.");
             }
-        };
+        },
+    });
 
-        fetchProduct();
-    }, [productId]);
+
+    if (isLoading) return <div className="text-center mt-5">Loading product...</div>;
+    if (isError) return <div className="text-center mt-5 text-danger">Error loading product.</div>;
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            setImage(e.target.files[0]);
-        }
+        if (e.target.files?.length) setImage(e.target.files[0]);
     };
 
     const handleLocationFetch = () => {
@@ -62,83 +96,33 @@ const EditProduct: React.FC = () => {
             setErrorMessage("Geolocation is not supported by your browser.");
             return;
         }
-
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 setLatitude(position.coords.latitude);
                 setLongitude(position.coords.longitude);
             },
-            (error) => {
-                setErrorMessage("Unable to fetch location. Please allow location access.");
-                console.error(error);
-            }
+            () => setErrorMessage("Unable to fetch location. Please allow location access.")
         );
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const updatedFields: any = { id: productId };
-
-        // Only include fields that are modified
-        if (price !== originalProduct?.price.toString()) {
-            updatedFields.price = price;
-        }
-        if (status !== originalProduct?.status) {
-            updatedFields.status = status;
-        }
-
-        // Fixing verification_status comparison
-        if (verification !== originalProduct?.verification_status) {
-            updatedFields.verification_status = verification;
-        }
-
-        if (image) {
-            updatedFields.image = image;
-        }
-        if (latitude !== originalProduct?.latitude) {
-            updatedFields.latitude = latitude;
-        }
-        if (longitude !== originalProduct?.longitude) {
-            updatedFields.longitude = longitude;
-        }
+        if (price !== originalProduct?.price.toString()) updatedFields.price = price;
+        if (status !== originalProduct?.status) updatedFields.status = status;
+        if (verification !== originalProduct?.verification_status) updatedFields.verification_status = verification;
+        if (image) updatedFields.image = image;
+        if (latitude !== originalProduct?.latitude) updatedFields.latitude = latitude;
+        if (longitude !== originalProduct?.longitude) updatedFields.longitude = longitude;
 
         if (Object.keys(updatedFields).length === 0) {
             setErrorMessage("No changes were made.");
             return;
         }
 
-        // Extract token from localStorage
-        const token = localStorage.getItem("authToken");
-        if (!token) {
-            setErrorMessage("User not authenticated.");
-            return;
-        }
-
-        try {
-            console.log(updatedFields)
-            await axios.put("http://localhost:5000/product/update", updatedFields, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            setSuccessMessage("✅ Product updated successfully!");
-            setTimeout(() => {
-                setSuccessMessage("");
-            }, 3000);
-
-            navigate("/view-added-products");
-        } catch (error) {
-            setErrorMessage("An error occurred while updating the product.");
-            console.error("Error:", error);
-        }
+        mutation.mutate(updatedFields);
     };
-
-    if (!originalProduct) {
-        return <div className="text-center mt-5">Loading product...</div>;
-    }
 
     return (
         <div className="container mt-5" style={{ maxWidth: "600px", minHeight: "300px" }}>
@@ -183,48 +167,23 @@ const EditProduct: React.FC = () => {
                         </select>
                     </div>
 
-
-
-                    {/* <div className="mb-2">
-                        <label className="form-label">Verification_Status:</label>
-                        <select
-                            className="form-select"
-                            value={verification}
-                            onChange={(e) => setVerification(e.target.value)}
-                        >
-                            <option value="complete">Complete</option>
-                            <option value="incomplete">Incomplete</option>
-
-                        </select>
-                    </div> */}
-
                     <div className="mb-2">
                         <label className="form-label">Image:</label>
-                        <input
-                            type="file"
-                            className="form-control"
-                            onChange={handleImageChange}
-                        />
+                        <input type="file" className="form-control" onChange={handleImageChange} />
                     </div>
 
                     <div className="mb-2">
                         <label className="form-label">Location:</label>
                         <div className="d-flex align-items-center">
-                            <button
-                                type="button"
-                                className="btn btn-success me-2"
-                                onClick={handleLocationFetch}
-                            >
+                            <button type="button" className="btn btn-success me-2" onClick={handleLocationFetch}>
                                 Get Location
                             </button>
-                            {latitude && longitude && (
-                                <span className="text-success">{latitude}, {longitude}</span>
-                            )}
+                            {latitude && longitude && <span className="text-success">{latitude}, {longitude}</span>}
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-100">
-                        Update Product
+                    <button type="submit" className="btn btn-primary w-100" disabled={mutation.isPending}>
+                        {mutation.isPending ? "Updating..." : "Update Product"}
                     </button>
                 </form>
             </div>

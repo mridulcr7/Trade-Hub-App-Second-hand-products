@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 
 interface DecodedToken {
@@ -9,61 +10,72 @@ interface DecodedToken {
     exp: number;
 }
 
+interface UserProfile {
+    id: string;
+    name: string;
+    email: string;
+    contact: string;
+    image_url: string;
+}
+
+// Function to fetch user data
+const fetchUserProfile = async (): Promise<UserProfile> => {
+    const token = localStorage.getItem("authToken");
+    if (!token) throw new Error("No token found");
+
+    const decoded = jwtDecode<DecodedToken>(token);
+    const id = decoded.id;
+
+    const response = await fetch("http://localhost:5000/user/profile", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id }),
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+    }
+
+    const data = await response.json();
+    if (!data.user) throw new Error("User data not found");
+
+    return data.user;
+};
+
 const ViewProfile = () => {
-    const [user, setUser] = useState<any>(null);
+    const { data: user, isLoading, error } = useQuery(
+        {
+            queryKey: ["userProfile"],
+            queryFn: fetchUserProfile
+        });
 
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const token = localStorage.getItem("authToken");
-                if (!token) {
-                    console.error("No token found");
-                    return;
-                }
+    if (isLoading) {
+        return (
+            <div className="d-flex justify-content-center align-items-center vh-100">
+                <p>Loading...</p>
+            </div>
+        );
+    }
 
-                // Decode token to extract email
-                const decoded = jwtDecode<DecodedToken>(token);
-                //  console.log("Decoded token:", decoded);
+    if (error instanceof Error) {
+        return (
+            <div className="d-flex justify-content-center align-items-center vh-100">
+                <p className="text-danger">{error.message}</p>
+            </div>
+        );
+    }
 
-                const id = decoded.id;
-
-                const response = await fetch("http://localhost:5000/user/profile", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ id }),
-                });
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch user data");
-                }
-
-                const data = await response.json();
-                // console.log("API response:", data);
-                if (data.user) {
-                    setUser(data.user); // Assuming data.user is the structure returned
-                } else {
-                    console.error("User data not found in the response.");
-                }
-            } catch (error) {
-                console.error("Error fetching user profile:", error);
-            }
-        };
-
-        fetchUserProfile();
-    }, []);
-
-    // Check if user data is available before rendering
     return (
         <div className="d-flex justify-content-center align-items-center mt-5">
-            {user ? (
+            {user && (
                 <div className="card shadow-lg p-4 text-center" style={{ width: "22rem" }}>
                     {/* User Profile Image */}
                     <div className="d-flex justify-content-center mb-4">
                         <img
-                            src={user.image_url} // Ensure backend sends this URL
+                            src={user.image_url}
                             alt="Profile"
                             className="rounded-circle shadow border-5 border-white"
                             style={{ width: "150px", height: "150px", objectFit: "cover" }}
@@ -79,10 +91,6 @@ const ViewProfile = () => {
                             Update Profile
                         </button>
                     </Link>
-                </div>
-            ) : (
-                <div className="d-flex justify-content-center align-items-center vh-100">
-                    <p>Loading...</p>
                 </div>
             )}
         </div>

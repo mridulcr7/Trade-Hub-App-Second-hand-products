@@ -88,15 +88,15 @@ export const getAllProducts = async (
   lat: number,
   long: number,
   category: string,
-  userId: string
+  userId: string,
+  page: number,
+  limit: number
 ): Promise<(Product & { distance: number })[]> => {
   try {
-
-
-    return await getAllProductWithDistance(lat, long, category, userId);
+    return await getAllProductWithDistance(lat, long, category, userId, page, limit);
   } catch (error) {
-    console.error('Error fetching products:', error);
-    throw new Error('Failed to fetch products');
+    console.error("Error fetching products:", error);
+    throw new Error("Failed to fetch products");
   }
 };
 
