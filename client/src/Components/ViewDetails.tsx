@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import useReverseGeocoding from "../Hooks/useReverseGeocoding";
 
@@ -19,7 +19,7 @@ interface Product {
 
 interface Seller {
     id: string;
-    username: string;
+    name: string;
     email: string;
     contact: string;
     image_url: string;
@@ -29,8 +29,7 @@ const ViewDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [product, setProduct] = useState<Product | null>(null);
     const [seller, setSeller] = useState<Seller | null>(null);
-
-
+    const navigate = useNavigate();
 
     const { address, error } = useReverseGeocoding(product?.lat, product?.lon);
 
@@ -78,7 +77,7 @@ const ViewDetails: React.FC = () => {
                 });
 
                 const sellerData = await response.json();
-                console.log(sellerData);
+                console.log("Seller Data",sellerData);
                 setSeller(sellerData.user);
             } catch (error) {
                 console.error("Error fetching seller details:", error);
@@ -88,6 +87,44 @@ const ViewDetails: React.FC = () => {
         fetchProduct();
 
     }, [id]);
+
+    const handleChatClick = async () => {
+        if (!seller) return;
+
+        try {
+            const token = localStorage.getItem("authToken");
+            if (!token) {
+                console.error("No token found");
+                return;
+            }
+
+            const response = await fetch(`http://localhost:5000/chat/user/${seller.id}/messages`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            const data = await response.json();
+            console.log("Navigating with recipient:", {
+                id: seller.id,
+                name: seller.name,
+                image_url: seller.image_url
+            });
+
+            // Navigate with properly structured state
+            navigate(`/chats/${data.chat_id}`, {
+                state: {
+                    recipient: {
+                        id: seller.id,
+                        name: seller.name,
+                        image_url: seller.image_url
+                    }
+                }
+            });
+        } catch (error) {
+            console.error("Error initiating chat:", error);
+        }
+    };
 
     return (
         <div className="container mt-5">
@@ -141,10 +178,15 @@ const ViewDetails: React.FC = () => {
                                     height="80"
                                     alt="Seller"
                                 />
-                                <h5>{seller.username}</h5>
+                                <h5>{seller.name}</h5>
                                 <p><FaEnvelope /> {seller.email}</p>
                                 <p><FaPhoneAlt /> {seller.contact}</p>
-                                <button className="btn btn-primary w-100">Chat with Seller</button>
+                                <button
+                                    className="btn btn-primary w-100"
+                                    onClick={handleChatClick}
+                                >
+                                    Chat with Seller
+                                </button>
                             </div>
                         </div>
                     )}

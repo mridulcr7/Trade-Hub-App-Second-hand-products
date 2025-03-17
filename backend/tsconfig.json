@@ -16,7 +16,8 @@
     ] // Include the ES2020 library features
   },
   "include": [
-    "src"
+    "src/**/*",
+    "src/types/env.d.ts"
   ],
   "exclude": [
     "node_modules"
