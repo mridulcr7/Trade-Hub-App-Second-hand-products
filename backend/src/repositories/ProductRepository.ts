@@ -131,8 +131,12 @@ export const getAllProductWithDistance = async (
   lat: number,
   long: number,
   category: string,
-  user_id: string
+  user_id: string,
+  page: number = 1,   // Default page = 1
+  limit: number = 3    // Default limit = 3
 ): Promise<(Product & { lat: number; lon: number; distance: number; image_urls: string[] })[]> => {
+  const offset = (page - 1) * limit; // Calculate offset for pagination
+
   const query = `
     SELECT 
       p.*, 
@@ -152,12 +156,12 @@ export const getAllProductWithDistance = async (
     FROM products p
     WHERE LOWER(p.category) = LOWER($3)
       AND p.seller_id != $4  -- Exclude products where the seller_id matches the user_id
-    ORDER BY distance ASC;
+    ORDER BY distance ASC
+    LIMIT $5 OFFSET $6;  -- Pagination applied here
   `;
 
   try {
-    const result = await pool.query(query, [lat, long, category, user_id]);
-    console.log("Query result:", result.rows);
+    const result = await pool.query(query, [lat, long, category, user_id, limit, offset]);
     return result.rows;
   } catch (error: unknown) {
     if (error instanceof Error) {

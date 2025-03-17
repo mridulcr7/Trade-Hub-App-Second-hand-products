@@ -33,6 +33,14 @@ export const createUserRepo = {
 
     },
 
+    isContactExists: async (contact: string, userId: number) => {
+        const result = await pool.query(
+            `SELECT id FROM users WHERE contact = $1 AND id != $2`,
+            [contact, userId]
+        );
+        return result.rows.length > 0; // Returns true if contact exists
+    },
+
 
     update: async (userId: number, updateData: any) => {
         try {
