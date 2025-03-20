@@ -5,7 +5,7 @@ import ProductCard from "./ProductCard";
 import { FaSearch } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import React from "react";
+import * as React from "react";
 
 // Define available states and categories
 const states = ["Andhra Pradesh", "Bihar", "Delhi", "Karnataka", "Maharashtra", "Uttar Pradesh"];
@@ -25,17 +25,17 @@ const categories = [
 ];
 
 
-interface Product {
-    id: string;
-    name: string;
-    price: string;
-    status: string;
-    category: string;
-    image_urls: string[];
-    updated_at: string;
-    lat: number;
-    lon: number;
-}
+// interface Product {
+//     id: string;
+//     name: string;
+//     price: string;
+//     status: string;
+//     category: string;
+//     image_urls: string[];
+//     updated_at: string;
+//     lat: number;
+//     lon: number;
+// }
 
 // Function to fetch products (Paginated and Random fetching)
 const fetchProducts = async ({ pageParam = 1, queryKey }: { pageParam: number; queryKey: any }) => {

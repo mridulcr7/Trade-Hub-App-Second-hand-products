@@ -27,11 +27,10 @@ const AddProduct: React.FC = () => {
         status: "unsold",
         verificationStatus: "incomplete",
         image: null as File | null,
-        // latitude: null as number | null,
-        // longitude: null as number | null,
+        latitude: null as number | null,
+        longitude: null as number | null,
 
-        latitude: 28.5526,
-        longitude: 77.2191
+
 
     });
 
@@ -46,20 +45,20 @@ const AddProduct: React.FC = () => {
     };
 
     const handleLocationFetch = () => {
-        // if (!navigator.geolocation) {
-        //     alert("Geolocation is not supported by your browser.");
-        //     return;
-        // }
-        // navigator.geolocation.getCurrentPosition(
-        //     (position) => {
-        //         setFormState((prev) => ({
-        //             ...prev,
-        //             latitude: position.coords.latitude,
-        //             longitude: position.coords.longitude,
-        //         }));
-        //     },
-        //     () => alert("Unable to fetch location. Please allow location access.")
-        // );
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser.");
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setFormState((prev) => ({
+                    ...prev,
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                }));
+            },
+            () => alert("Unable to fetch location. Please allow location access.")
+        );
     };
 
     const mutation = useMutation({

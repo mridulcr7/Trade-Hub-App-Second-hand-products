@@ -146,12 +146,14 @@ const Navbar = () => {
                                                         padding: "10px",
                                                         transition: "background 0.3s",
                                                     }}
-                                                    onMouseEnter={(e) =>
-                                                        (e.target.style.backgroundColor = "#f0f0f0")
-                                                    }
-                                                    onMouseLeave={(e) =>
-                                                        (e.target.style.backgroundColor = "transparent")
-                                                    }
+                                                    onMouseEnter={(e) => {
+                                                        const target = e.target as HTMLAnchorElement; // Typecast to HTMLAnchorElement
+                                                        target.style.backgroundColor = "#f0f0f0";
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        const target = e.target as HTMLAnchorElement; // Typecast to HTMLAnchorElement
+                                                        target.style.backgroundColor = "transparent";
+                                                    }}
                                                 >
                                                     Update Profile
                                                 </Link>
@@ -164,12 +166,14 @@ const Navbar = () => {
                                                         padding: "10px",
                                                         transition: "background 0.3s",
                                                     }}
-                                                    onMouseEnter={(e) =>
-                                                        (e.target.style.backgroundColor = "#f0f0f0")
-                                                    }
-                                                    onMouseLeave={(e) =>
-                                                        (e.target.style.backgroundColor = "transparent")
-                                                    }
+                                                    onMouseEnter={(e) => {
+                                                        const target = e.target as HTMLAnchorElement; // Typecast to HTMLAnchorElement
+                                                        target.style.backgroundColor = "#f0f0f0";
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        const target = e.target as HTMLAnchorElement; // Typecast to HTMLAnchorElement
+                                                        target.style.backgroundColor = "transparent";
+                                                    }}
                                                 >
                                                     View Profile
                                                 </Link>
@@ -182,12 +186,14 @@ const Navbar = () => {
                                                         padding: "10px",
                                                         transition: "background 0.3s",
                                                     }}
-                                                    onMouseEnter={(e) =>
-                                                        (e.target.style.backgroundColor = "#f0f0f0")
-                                                    }
-                                                    onMouseLeave={(e) =>
-                                                        (e.target.style.backgroundColor = "transparent")
-                                                    }
+                                                    onMouseEnter={(e) => {
+                                                        const target = e.target as HTMLAnchorElement; // Typecast to HTMLAnchorElement
+                                                        target.style.backgroundColor = "#f0f0f0";
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        const target = e.target as HTMLAnchorElement; // Typecast to HTMLAnchorElement
+                                                        target.style.backgroundColor = "transparent";
+                                                    }}
                                                 >
                                                     View Added Products
                                                 </Link>

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import useReverseGeocoding from "../Hooks/useReverseGeocoding";
+import useReverseGeocoding from "../Hooks/useReverseGeocoding.tsx";
 
 interface Product {
     id: string;

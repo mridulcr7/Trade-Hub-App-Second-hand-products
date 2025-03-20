@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from "react";
+import * as React from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-interface Product {
-    id: string;
-    name: string;
-    price: number;
-    description: string | null;
-    image_url: string;
-    status: string;
-    verification_status: string;
-    latitude?: number;
-    longitude?: number;
-    // latitude: 28.5936,
-    // longitude: 77.2295
-}
+// interface Product {
+//     id: string;
+//     name: string;
+//     price: number;
+//     description: string | null;
+//     image_url: string;
+//     status: string;
+//     verification_status: string;
+//     latitude?: number;
+//     longitude?: number;
+//     // latitude: 28.5936,
+//     // longitude: 77.2295
+// }
 
 const fetchProduct = async (productId: string) => {
     const response = await axios.get(`http://localhost:5000/product/${productId}`);

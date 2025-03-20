@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import * as React from "react";
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import io, { Socket } from 'socket.io-client';
-import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../context/UserContext';
 
 interface Recipient {
