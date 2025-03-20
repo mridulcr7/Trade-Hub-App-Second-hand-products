@@ -5,6 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: Number(process.env.PORT) || 5173, // Use the Render-provided PORT or fallback to 5173
-    host: true, // Allow access from the network
+    host: true, // Allow access from the network,
+    allowedHosts: ['trade-hub-app-second-hand-products.onrender.com'], // Add the Render host
+
   },
 });
