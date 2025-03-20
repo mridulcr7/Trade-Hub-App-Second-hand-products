@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "build:css": "postcss src/index.css -o src/tailwind.css",
-    "start": "node dist/index.js"
+    "start": "node dist/backend/main.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
