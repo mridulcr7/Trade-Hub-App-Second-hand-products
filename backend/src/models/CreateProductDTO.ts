@@ -5,4 +5,5 @@ export interface CreateProductDTO {
   category: string;
   latitude: number;
   longitude: number;
+  description: string;
 }

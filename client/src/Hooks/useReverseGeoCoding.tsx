@@ -10,8 +10,7 @@ const useReverseGeocoding = (latitude?: number, longitude?: number) => {
             const fetchAddress = async () => {
                 try {
                     const api = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
-                    console.log(api)
-                    console.log("Fetching address from:", api); // Debugging log
+                    // Debugging log
 
                     const response = await axios.get(api);
 

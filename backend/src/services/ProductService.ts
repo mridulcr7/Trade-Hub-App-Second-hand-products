@@ -26,6 +26,7 @@ export const createProduct = async (dto: CreateProductDTO, userId: string): Prom
     seller_id: userId,
     price: dto.price,
     category: dto.category,
+    description: dto.description ?? null,
     status: 'unsold', // Set default
     verification_status: 'incomplete', // Set default
     created_at: new Date(), // Auto-generated
@@ -121,18 +122,16 @@ export const getUserProductsService = async (userId: string) => {
 
 export const updateProductService = async (id: string, updatedFields: any): Promise<Product | null> => {
   try {
-    // Fetch the product to check if it exists
     const product = await getProductByIdRepo(id);
 
     if (!product) {
-      throw new Error('Product not found');
+      throw new Error("Product not found");
     }
 
-    // Update the product with the new values
-    const updatedProduct = await updateProduct(id, updatedFields);
-    return updatedProduct;
-  } catch (error) {
-    console.error('Error in updateProductService:', error);
-    throw new Error('Error updating product');
+    // Forward errors from `updateProduct`
+    return await updateProduct(id, updatedFields);
+  } catch (error: any) {
+    console.error("Service Error:", error.message || error);
+    throw new Error(error.message || "Error updating product"); // Preserve original error message
   }
 };

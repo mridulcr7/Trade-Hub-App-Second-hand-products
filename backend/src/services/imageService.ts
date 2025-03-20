@@ -27,6 +27,8 @@ export const uploadImageService = async (file: Express.Multer.File): Promise<str
     try {
         console.log("2");
         console.log(file.buffer);
+
+        //Base64 encoding transforms binary data into an ASCII string format, 
         const base64Image = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
 
         //console.log(base64Image);
@@ -47,7 +49,7 @@ export const uploadImageService = async (file: Express.Multer.File): Promise<str
 
         const result = (await response.json()) as CloudinaryResponse;
 
-        console.log("Success:", result.secure_url);
+        // console.log("Success:", result.secure_url);
         return result.secure_url;
     } catch (error) {
         console.error("Cloudinary upload error:", error);

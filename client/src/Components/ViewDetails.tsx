@@ -77,7 +77,7 @@ const ViewDetails: React.FC = () => {
                 });
 
                 const sellerData = await response.json();
-                console.log("Seller Data",sellerData);
+                console.log("Seller Data", sellerData);
                 setSeller(sellerData.user);
             } catch (error) {
                 console.error("Error fetching seller details:", error);
@@ -153,9 +153,9 @@ const ViewDetails: React.FC = () => {
                             </button>
                         </div>
                         <div className="card-body">
-                            <h3 className="card-title text-primary text-center" >{product?.name}</h3>
+                            <h3 className="card-title  text-center" style={{ color: "#9279D2" }} >{product?.name}</h3>
                             <p><strong>Category:</strong> {product?.category}</p>
-                            <p><strong>Description:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                            <p><strong>Description:</strong> {product?.description}</p>
                         </div>
                     </div>
                 </div>
@@ -164,7 +164,7 @@ const ViewDetails: React.FC = () => {
                 <div className="col-md-4 ms-md-5">
                     {/* Price Section */}
                     <div className="card shadow p-3 mb-4 text-center">
-                        <h2 className="text-success fw-bold">₹{product?.price}</h2>
+                        <h2 className="text-danger fw-bold">₹{product?.price}</h2>
                     </div>
 
                     {/* Seller Details */}
@@ -182,8 +182,9 @@ const ViewDetails: React.FC = () => {
                                 <p><FaEnvelope /> {seller.email}</p>
                                 <p><FaPhoneAlt /> {seller.contact}</p>
                                 <button
-                                    className="btn btn-primary w-100"
+                                    className="btn w-100"
                                     onClick={handleChatClick}
+                                    style={{ backgroundColor: "#9279D2", color: "white", width: "100%" }}
                                 >
                                     Chat with Seller
                                 </button>

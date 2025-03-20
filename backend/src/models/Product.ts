@@ -10,5 +10,6 @@ export interface Product {
   updated_at?: Date;
   latitude: number;
   longitude: number;
+  description?: string | null;
 
 }

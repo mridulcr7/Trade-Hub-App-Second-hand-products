@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const RegisterForm = () => {
     const navigate = useNavigate();
@@ -16,7 +17,6 @@ const RegisterForm = () => {
         setPasswordVisible((prevState) => !prevState);
     };
 
-    // ✅ Register API function
     const registerapi = async (formDataToSend: FormData) => {
         const response = await axios.post("http://localhost:5000/user/register", formDataToSend, {
             headers: {
@@ -30,7 +30,6 @@ const RegisterForm = () => {
         mutationFn: registerapi,
         mutationKey: ["register"],
         onSuccess: (data) => {
-
             const token = data.token;
 
             if (token) {
@@ -40,7 +39,7 @@ const RegisterForm = () => {
                 localStorage.setItem("authToken", token);
                 localStorage.setItem("tokenExpiry", expirationTime.toString());
 
-                setSuccessMessage("✅ register successfully!");
+                setSuccessMessage("✅ Registered successfully!");
                 navigate("/home");
             }
         },
@@ -71,43 +70,63 @@ const RegisterForm = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <div className="card shadow-lg" style={{ maxWidth: "400px", margin: "0 auto" }}>
+        <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
+            <div className="card shadow-lg p-4" style={{ maxWidth: "450px", width: "100%" }}>
                 <div className="card-body">
-                    <h2 className="card-title text-center mb-4">Register</h2>
+                    <h2 className="card-title text-center fw-bold mb-4" style={{ color: "#9279D2" }}>
+                        Register
+                    </h2>
 
-                    {errorMessage && <p className="alert alert-danger text-center">{errorMessage}</p>}
-                    {successMessage && <p className="text-success text-center">{successMessage}</p>}
+                    {errorMessage && <div className="alert alert-danger text-center">{errorMessage}</div>}
+                    {successMessage && <div className="alert alert-success text-center">{successMessage}</div>}
 
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
-                            <input className="form-control" type="text" name="name" placeholder="Name" required />
+                            <input className="form-control" type="text" name="name" placeholder="Full Name" required />
                         </div>
+
                         <div className="mb-3">
                             <input className="form-control" type="email" name="email" placeholder="Email" required />
                         </div>
+
                         <div className="mb-3 position-relative">
-                            <input className="form-control" type={passwordVisible ? "text" : "password"} name="password" placeholder="Password" required />
-                            <span className="position-absolute top-50 end-0 translate-middle-y me-3" onClick={handlePasswordVisibility} style={{ cursor: "pointer" }}>
+                            <input
+                                className="form-control"
+                                type={passwordVisible ? "text" : "password"}
+                                name="password"
+                                placeholder="Password"
+                                required
+                            />
+                            <span
+                                className="position-absolute top-50 end-0 translate-middle-y me-3 text-secondary"
+                                onClick={handlePasswordVisibility}
+                                style={{ cursor: "pointer" }}
+                            >
                                 {passwordVisible ? <FaEyeSlash /> : <FaEye />}
                             </span>
                         </div>
+
                         <div className="mb-3">
                             <input className="form-control" type="text" name="contact" placeholder="Contact (10 digits)" maxLength={10} required />
                         </div>
+
                         <div className="mb-3">
                             <input type="file" className="form-control" onChange={(e) => setImage(e.target.files?.[0] || null)} required />
                         </div>
-                        <button type="submit" className="btn btn-success w-100" disabled={mutation.isPending}>
+
+                        <button
+                            type="submit"
+                            className="btn w-100 fw-bold"
+                            style={{ backgroundColor: "#9279D2", color: "white" }}
+                            disabled={mutation.isPending}
+                        >
                             {mutation.isPending ? "Registering..." : "Register"}
                         </button>
                     </form>
 
-
-
                     <p className="text-center mt-3">
                         Already have an account?{" "}
-                        <a href="/" className="text-decoration-none text-primary">
+                        <a href="/" className="text-decoration-none fw-bold" style={{ color: "#C88BE8" }}>
                             Sign In
                         </a>
                     </p>

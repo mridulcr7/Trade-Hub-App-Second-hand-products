@@ -4,18 +4,38 @@ import { useMutation } from "@tanstack/react-query";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const AddProduct: React.FC = () => {
+    const categories = [
+        "Mobiles",
+        "Cars",
+        "Bikes",
+        "Properties",
+        "Electronics & Appliances",
+        "Furniture",
+        "Fashion",
+        "Books, Sports & Hobbies",
+        "Pets",
+        "Commercial Vehicles & Spares",
+        "Jobs",
+        "Services",
+    ];
+
     const [formState, setFormState] = useState({
         name: "",
         price: "",
-        category: "",
+        category: categories[0],
+        description: "",
         status: "unsold",
         verificationStatus: "incomplete",
         image: null as File | null,
-        latitude: null as number | null,
-        longitude: null as number | null,
+        // latitude: null as number | null,
+        // longitude: null as number | null,
+
+        latitude: 28.5526,
+        longitude: 77.2191
+
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormState((prev) => ({ ...prev, [name]: value }));
     };
@@ -26,29 +46,27 @@ const AddProduct: React.FC = () => {
     };
 
     const handleLocationFetch = () => {
-        if (!navigator.geolocation) {
-            alert("Geolocation is not supported by your browser.");
-            return;
-        }
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                setFormState((prev) => ({
-                    ...prev,
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                }));
-            },
-            () => alert("Unable to fetch location. Please allow location access.")
-        );
+        // if (!navigator.geolocation) {
+        //     alert("Geolocation is not supported by your browser.");
+        //     return;
+        // }
+        // navigator.geolocation.getCurrentPosition(
+        //     (position) => {
+        //         setFormState((prev) => ({
+        //             ...prev,
+        //             latitude: position.coords.latitude,
+        //             longitude: position.coords.longitude,
+        //         }));
+        //     },
+        //     () => alert("Unable to fetch location. Please allow location access.")
+        // );
     };
-
-
 
     const mutation = useMutation({
         mutationFn: async () => {
-            const { name, price, category, status, verificationStatus, image, latitude, longitude } = formState;
+            const { name, price, category, description, status, verificationStatus, image, latitude, longitude } = formState;
 
-            if (!name || !price || !category || !image || latitude === null || longitude === null) {
+            if (!name || !price || !category || !description || !image || latitude === null || longitude === null) {
                 throw new Error("All fields are required");
             }
 
@@ -62,6 +80,7 @@ const AddProduct: React.FC = () => {
             formData.append("name", name);
             formData.append("price", price);
             formData.append("category", category);
+            formData.append("description", description);
             formData.append("status", status);
             formData.append("verification_status", verificationStatus);
             formData.append("latitude", latitude.toString());
@@ -78,23 +97,20 @@ const AddProduct: React.FC = () => {
         },
     });
 
-
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         mutation.mutate();
-        console.log(mutation)
     };
 
     return (
-        <div className="container mt-2" style={{ maxWidth: "600px", minHeight: "300px" }}>
-            <div className="card shadow-lg p-3 rounded-4">
-                <h2 className="text-center text-primary mb-3">Add Product</h2>
+        <div className="container mt-4" style={{ maxWidth: "700px", minHeight: "400px" }}>
+            <div className="card shadow-lg p-4 rounded-4">
+                <h2 className="text-center mb-4" style={{ color: "#9279D2" }}>Add Product</h2>
                 {mutation.isError && <p className="alert alert-danger text-center">{(mutation.error as Error).message}</p>}
                 {mutation.isSuccess && <p className="alert alert-success text-center">✅ Product added successfully!</p>}
 
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-2">
+                    <div className="mb-3">
                         <label className="form-label">Name:</label>
                         <input
                             type="text"
@@ -106,7 +122,7 @@ const AddProduct: React.FC = () => {
                         />
                     </div>
 
-                    <div className="mb-2">
+                    <div className="mb-3">
                         <label className="form-label">Price:</label>
                         <input
                             type="number"
@@ -118,19 +134,55 @@ const AddProduct: React.FC = () => {
                         />
                     </div>
 
-                    <div className="mb-2">
+                    <div className="mb-3">
                         <label className="form-label">Category:</label>
-                        <input
-                            type="text"
+                        <select
                             name="category"
-                            className="form-control"
+                            className="form-select"
                             value={formState.category}
                             onChange={handleChange}
                             required
-                        />
+                        >
+                            {categories.map((category) => (
+                                <option key={category} value={category}>
+                                    {category}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
-                    <div className="mb-2">
+                    <div className="mb-3">
+                        <label className="form-label">Description:</label>
+                        <textarea
+                            name="description"
+                            className="form-control"
+                            rows={3}
+                            value={formState.description}
+                            onChange={handleChange}
+
+                        ></textarea>
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="form-label">Image:</label>
+                        <input type="file" className="form-control" onChange={handleImageChange} required />
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="form-label">Location:</label>
+                        <div className="d-flex align-items-center">
+                            <button type="button" className="btn me-2" style={{ backgroundColor: "#9279D2", color: "white" }} onClick={handleLocationFetch}>
+                                Get Location
+                            </button>
+                            {formState.latitude && formState.longitude && (
+                                <span className="text-success">
+                                    {formState.latitude}, {formState.longitude}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="mb-3">
                         <label className="form-label">Status:</label>
                         <select
                             name="status"
@@ -145,7 +197,7 @@ const AddProduct: React.FC = () => {
                         </select>
                     </div>
 
-                    <div className="mb-2">
+                    <div className="mb-3">
                         <label className="form-label">Verification Status:</label>
                         <select
                             name="verificationStatus"
@@ -159,26 +211,7 @@ const AddProduct: React.FC = () => {
                         </select>
                     </div>
 
-                    <div className="mb-2">
-                        <label className="form-label">Image:</label>
-                        <input type="file" className="form-control" onChange={handleImageChange} required />
-                    </div>
-
-                    <div className="mb-2">
-                        <label className="form-label">Location:</label>
-                        <div className="d-flex align-items-center">
-                            <button type="button" className="btn btn-success me-2" onClick={handleLocationFetch}>
-                                Get Location
-                            </button>
-                            {formState.latitude && formState.longitude && (
-                                <span className="text-success">
-                                    {formState.latitude}, {formState.longitude}
-                                </span>
-                            )}
-                        </div>
-                    </div>
-
-                    <button type="submit" className="btn btn-primary w-100" disabled={mutation.isPending}>
+                    <button type="submit" className="btn  w-100" style={{ backgroundColor: "#9279D2", color: "white" }} disabled={mutation.isPending}>
                         {mutation.isPending ? "Adding..." : "Add Product"}
                     </button>
                 </form>

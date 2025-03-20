@@ -4,6 +4,8 @@ import { Message } from '../types/message';
 import redis from '../config/redis';
 
 const chatEvents = (io: Server) => {
+
+
     io.on("connection", async (socket: Socket) => {
         console.log("A user connected");
 

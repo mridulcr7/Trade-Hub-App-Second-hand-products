@@ -8,10 +8,14 @@ interface Product {
     id: string;
     name: string;
     price: number;
-    description: string;
+    description: string | null;
     image_url: string;
     status: string;
     verification_status: string;
+    latitude?: number;
+    longitude?: number;
+    // latitude: 28.5936,
+    // longitude: 77.2295
 }
 
 const fetchProduct = async (productId: string) => {
@@ -46,6 +50,7 @@ const EditProduct: React.FC = () => {
     const [price, setPrice] = useState<string>("");
     const [status, setStatus] = useState<string>("unsold");
     const [verification, setVerification] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
     const [image, setImage] = useState<File | null>(null);
     const [latitude, setLatitude] = useState<number | null>(null);
     const [longitude, setLongitude] = useState<number | null>(null);
@@ -58,8 +63,9 @@ const EditProduct: React.FC = () => {
             setPrice(originalProduct.price.toString());
             setStatus(originalProduct.status);
             setVerification(originalProduct.verification_status);
-            setLatitude(originalProduct.latitude);
-            setLongitude(originalProduct.longitude);
+            setDescription(originalProduct.description || ""); // Handle null case
+            setLatitude(originalProduct.latitude || null);
+            setLongitude(originalProduct.longitude || null);
         }
     }, [originalProduct]);
 
@@ -82,7 +88,6 @@ const EditProduct: React.FC = () => {
             }
         },
     });
-
 
     if (isLoading) return <div className="text-center mt-5">Loading product...</div>;
     if (isError) return <div className="text-center mt-5 text-danger">Error loading product.</div>;
@@ -112,6 +117,7 @@ const EditProduct: React.FC = () => {
         if (price !== originalProduct?.price.toString()) updatedFields.price = price;
         if (status !== originalProduct?.status) updatedFields.status = status;
         if (verification !== originalProduct?.verification_status) updatedFields.verification_status = verification;
+        if (description !== originalProduct?.description) updatedFields.description = description;
         if (image) updatedFields.image = image;
         if (latitude !== originalProduct?.latitude) updatedFields.latitude = latitude;
         if (longitude !== originalProduct?.longitude) updatedFields.longitude = longitude;
@@ -127,7 +133,7 @@ const EditProduct: React.FC = () => {
     return (
         <div className="container mt-5" style={{ maxWidth: "600px", minHeight: "300px" }}>
             <div className="card shadow-lg p-3 rounded-4">
-                <h2 className="text-center text-primary mb-3">Edit Product</h2>
+                <h2 className="text-center  mb-3" style={{ color: "#9279D2" }}>Edit Product</h2>
                 {errorMessage && <p className="alert alert-danger text-center">{errorMessage}</p>}
                 {successMessage && <p className="text-success text-center">{successMessage}</p>}
 
@@ -168,6 +174,16 @@ const EditProduct: React.FC = () => {
                     </div>
 
                     <div className="mb-2">
+                        <label className="form-label">Description:</label>
+                        <textarea
+                            className="form-control"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Enter product description"
+                        ></textarea>
+                    </div>
+
+                    <div className="mb-2">
                         <label className="form-label">Image:</label>
                         <input type="file" className="form-control" onChange={handleImageChange} />
                     </div>
@@ -182,7 +198,7 @@ const EditProduct: React.FC = () => {
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-100" disabled={mutation.isPending}>
+                    <button type="submit" className="btn w-100" style={{ backgroundColor: "#9279D2", color: "white" }} disabled={mutation.isPending}>
                         {mutation.isPending ? "Updating..." : "Update Product"}
                     </button>
                 </form>

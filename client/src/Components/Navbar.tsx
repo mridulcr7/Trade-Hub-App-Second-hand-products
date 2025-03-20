@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaPlus, FaUser } from "react-icons/fa";
+import { FaPlus, FaUser, FaEnvelope } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Navbar = () => {
@@ -9,25 +9,25 @@ const Navbar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     useEffect(() => {
-        // Check if the token is still valid when component mounts or is updated
+
         const expiry = localStorage.getItem("tokenExpiry");
         const token = localStorage.getItem("authToken");
 
         if (token && expiry) {
             const currentTime = new Date().getTime();
             if (currentTime > parseInt(expiry, 10)) {
-                // Token expired
+
                 localStorage.removeItem("authToken");
                 localStorage.removeItem("tokenExpiry");
                 setIsLoggedIn(false);
                 navigate("/");
             } else {
-                setIsLoggedIn(true); // Token is valid
+                setIsLoggedIn(true);
             }
         } else {
-            setIsLoggedIn(false); // No token available, user is logged out
+            setIsLoggedIn(false);
         }
-    }, [navigate]); // Add navigate to dependencies so that it re-runs if navigate changes
+    }, [navigate]);
 
     const handleLogout = () => {
         localStorage.removeItem("authToken");
@@ -37,9 +37,13 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="navbar navbar-expand-lg shadow" style={{ backgroundColor: "#621940" }}>
+        <nav className="navbar navbar-expand-lg shadow" style={{ backgroundColor: "#9279D2" }}>
             <div className="container">
-                <Link to="/home" className="navbar-brand text-white fw-bold fs-4">
+                <Link
+                    to="/home"
+                    className="navbar-brand fw-bold fs-4"
+                    style={{ color: "white", textDecoration: "none" }}
+                >
                     MyStore
                 </Link>
 
@@ -69,7 +73,7 @@ const Navbar = () => {
                             </>
                         ) : (
                             <>
-                                {/* Add Product Button with Text */}
+
                                 <li className="nav-item me-5">
                                     <Link to="/add-product" className="nav-link d-flex align-items-center text-white fw-semibold">
                                         <div
@@ -82,13 +86,30 @@ const Navbar = () => {
                                                 marginRight: "8px",
                                             }}
                                         >
-                                            <FaPlus style={{ color: "#621940", fontSize: "18px" }} />
+                                            <FaPlus style={{ color: "#9279D2", fontSize: "18px" }} />
                                         </div>
                                         Add Product
                                     </Link>
                                 </li>
+                                <li className="nav-item me-5">
+                                    <Link to="/chats" className="nav-link d-flex align-items-center text-white fw-semibold">
+                                        <div
+                                            className="d-flex align-items-center justify-content-center"
+                                            style={{
+                                                width: "40px",
+                                                height: "40px",
+                                                backgroundColor: "#fff",
+                                                borderRadius: "50%",
+                                                marginRight: "8px",
+                                            }}
+                                        >
+                                            <FaEnvelope style={{ color: "#9279D2", fontSize: "18px" }} />
+                                        </div>
+                                        View Chats
+                                    </Link>
+                                </li>
 
-                                {/* View Profile Dropdown */}
+
                                 <li
                                     className="nav-item dropdown me-5"
                                     style={{ cursor: "pointer", position: "relative" }}
@@ -100,7 +121,7 @@ const Navbar = () => {
                                         View Profile
                                     </div>
 
-                                    {/* Dropdown Menu */}
+
                                     {isDropdownOpen && (
                                         <ul
                                             className="dropdown-menu show"
@@ -175,12 +196,13 @@ const Navbar = () => {
                                     )}
                                 </li>
 
-                                {/* Logout Button - Moved Further to the Right */}
+
                                 <li className="nav-item ms-auto">
                                     <button
-                                        className="btn btn-danger"
+                                        className="btn text-white fw-semibold"
+
                                         onClick={handleLogout}
-                                        style={{ padding: "8px 15px", marginLeft: "30px" }}
+                                        style={{ backgroundColor: "#D72638", padding: "8px 15px", marginLeft: "30px" }}
                                     >
                                         Logout
                                     </button>

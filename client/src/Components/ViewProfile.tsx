@@ -87,7 +87,7 @@ const ViewProfile = () => {
                     <p className="text-muted mb-2">📞 {user.contact}</p>
 
                     <Link to="/update-profile">
-                        <button className="btn btn-primary mt-4 px-5 py-2 shadow" style={{ backgroundColor: "#621940" }}>
+                        <button className="btn btn-primary mt-4 px-5 py-2 shadow" style={{ backgroundColor: "#9279D2", color: "white", width: "100%" }}>
                             Update Profile
                         </button>
                     </Link>

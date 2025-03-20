@@ -55,6 +55,7 @@ const ViewAddedProducts = () => {
                 }
 
                 const data = await response.json();
+                console.log(data)
                 setProducts(data.products);
                 setLoading(false);
             } catch (error) {
@@ -97,7 +98,7 @@ const ViewAddedProducts = () => {
 
     return (
         <div className="container mt-5">
-            <h2 className="text-center mb-4">Your Added Products</h2>
+            <h2 className="text-center mb-4" style={{ color: "#9279D2" }}>Your Added Products</h2>
             <div className="row">
                 {products.length === 0 ? (
                     <p className="text-center">No products found.</p>
@@ -124,6 +125,10 @@ const ViewAddedProducts = () => {
                                     <p className="card-text">
                                         <strong>Location:</strong> {addresses[product.id] || "Fetching..."}
                                     </p>
+                                    <p className="card-text">
+                                        <strong>Description:</strong> {product.description ? product.description : "No description given"}
+                                    </p>
+
                                     <div className="d-flex justify-content-between">
                                         <Link to={`/edit-products/${product.id}`} className="btn btn-warning">
                                             Update Product

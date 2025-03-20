@@ -16,7 +16,7 @@ const useGeolocation = () => {
                     const api = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
                     const response = await axios.get(api);
                     setAddress(response.data.display_name);
-                    console.log(api);
+                    // console.log(api);
                 } catch (err) {
                     setError("Error fetching address");
                 }

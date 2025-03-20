@@ -141,7 +141,7 @@ const UpdateProfile = () => {
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
             <div className="card p-4 shadow-lg" style={{ width: "30rem" }}>
-                <h3 className="text-center">Update Profile</h3>
+                <h3 className="text-center" style={{ color: "#9279D2" }}>Update Profile</h3>
 
                 {errorMessage && <p className="alert alert-danger text-center">{errorMessage}</p>}
                 {successMessage && <p className="text-success text-center">{successMessage}</p>}
@@ -185,7 +185,7 @@ const UpdateProfile = () => {
                         <input type="file" className="form-control" onChange={handleImageChange} />
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-100" disabled={mutation.isPending}>
+                    <button type="submit" className="btn btn-primary w-100" style={{ backgroundColor: "#9279D2", color: "white", width: "100%" }} disabled={mutation.isPending}>
                         {mutation.isPending ? "Updating..." : "Update Profile"}
                     </button>
                 </form>

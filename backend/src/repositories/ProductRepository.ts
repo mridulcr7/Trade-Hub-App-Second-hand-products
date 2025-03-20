@@ -18,8 +18,8 @@ const pool = new Pool({
 
 export const addProduct = async (product: Product): Promise<Product> => {
   const query = `
-    INSERT INTO public.products (name, seller_id, price, status, category, verification_status, location)
-    VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_MakePoint($7, $8), 4326))
+    INSERT INTO public.products (name, seller_id, price, status, category, verification_status, location, description)
+    VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_MakePoint($7, $8), 4326), $9)
     RETURNING *;
   `;
 
@@ -32,6 +32,7 @@ export const addProduct = async (product: Product): Promise<Product> => {
     product.verification_status || 'incomplete',
     product.latitude,
     product.longitude,
+    product.description || null, // Ensure null for undefined values
   ];
 
   try {
@@ -41,7 +42,8 @@ export const addProduct = async (product: Product): Promise<Product> => {
     console.error('Error executing query:', error);
     throw new Error('Failed to add product');
   }
-}
+};
+
 //   const query = `
 //   UPDATE public.products
 //   SET name = COALESCE($2, name),
@@ -162,6 +164,7 @@ export const getAllProductWithDistance = async (
 
   try {
     const result = await pool.query(query, [lat, long, category, user_id, limit, offset]);
+    console.log(result.rows);
     return result.rows;
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -248,7 +251,7 @@ export const getUserProductsRepo = async (userId: string) => {
 
 export const updateProduct = async (productId: string, updateData: any): Promise<any> => {
   try {
-    const { price, status, category, latitude, longitude, image_url, verification_status } = updateData;
+    const { price, status, category, latitude, longitude, image_url, verification_status, description } = updateData;
     const setClauses: string[] = [];
     const values: any[] = [productId];
 
@@ -285,8 +288,14 @@ export const updateProduct = async (productId: string, updateData: any): Promise
       setClauses.push(`verification_status = $${values.length + 1}`);
       values.push(verification_status);
     }
+
+    if (description) {
+      setClauses.push(`description = $${values.length + 1}`);
+      values.push(description);
+    }
     // If no fields are provided for updating, throw an error
     if (setClauses.length === 0) {
+      console.log("jii")
       throw new Error("No fields provided for update");
     }
 
@@ -308,8 +317,51 @@ export const updateProduct = async (productId: string, updateData: any): Promise
     return result.rows[0]; // Return the updated product data
 
   } catch (error) {
-    console.error("Error updating product:", error);
+    // console.error("Error updating product:", error);
     throw error; // Re-throw the error to be handled by the service layer
   }
 };
 
+
+export const getRandomProducts = async (
+  page: number = 1,
+  limit: number = 3,
+  userId: string
+): Promise<(Product & { lat: number; lon: number; distance: number; image_urls: string[] })[]> => {
+  const offset = (page - 1) * limit; // Calculate offset for pagination
+
+  const query = `
+    SELECT 
+      p.*, 
+      ST_X(p.location::geometry) AS lat, 
+      ST_Y(p.location::geometry) AS lon, 
+      ST_Distance(
+        ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography, 
+        p.location::geography
+      )/1000 AS distance,
+      COALESCE(
+        (
+          SELECT json_agg(i.url) 
+          FROM images i 
+          WHERE i.product_id = p.id
+        ), '[]'::json
+      ) AS image_urls
+    FROM products p
+    WHERE p.status = 'unsold'  -- Only fetch unsold products
+      AND p.seller_id != $3  -- Exclude products where the seller_id matches the user_id
+    LIMIT $4 OFFSET $5;  -- Pagination applied here
+  `;
+
+  try {
+    const result = await pool.query(query, [0, 0, userId, limit, offset]); // Pass userId as the parameter
+    console.log("Query result:", result.rows);
+    return result.rows;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching random unsold products:", error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
+    throw new Error("Failed to fetch random unsold products");
+  }
+};

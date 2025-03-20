@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { useMutation } from "@tanstack/react-query";
 
@@ -11,7 +11,7 @@ const LoginForm = () => {
 
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: "", password: "" });
-    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+    const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string>("");
     const [successMessage, setSuccessMessage] = useState<string>("");
 
@@ -37,12 +37,12 @@ const LoginForm = () => {
 
 
                 if (token) {
-                    // Decode the JWT to extract expiry time
+
                     const decodedToken: any = jwtDecode(token);
                     console.log(decodedToken);
-                    const expirationTime = decodedToken.exp * 1000; // Convert to milliseconds
+                    const expirationTime = decodedToken.exp * 1000;
 
-                    // Store token and expiry
+
                     console.log(expirationTime);
                     localStorage.setItem("authToken", token);
                     localStorage.setItem("user", JSON.stringify(data.user));
@@ -50,16 +50,14 @@ const LoginForm = () => {
 
                     setSuccessMessage("✅ login successfully!");
 
-                    // Debugging: Check if navigate is being called
+
                     console.log("Redirecting to /home...");
                     navigate("/home");
                 } else {
                     alert("Invalid response from server.");
                 }
 
-                // localStorage.setItem("authToken", data.token);
-                // localStorage.setItem("user", JSON.stringify(data.user));
-                // navigate("/home");
+
             },
             onError: (error: any) => {
 
@@ -85,8 +83,7 @@ const LoginForm = () => {
         <div className="container mt-5">
             <div className="card shadow-lg" style={{ maxWidth: "400px", margin: "0 auto" }}>
                 <div className="card-body">
-                    <h2 className="card-title text-center mb-4">Login</h2>
-
+                    <h2 className="card-title text-center fw-bold mb-4" style={{ color: "#9279D2" }}>Login</h2>
                     {errorMessage && <p className="alert alert-danger text-center">{errorMessage}</p>}
                     {successMessage && <p className="text-success text-center">{successMessage}</p>}
 
@@ -104,13 +101,13 @@ const LoginForm = () => {
                         <div className="mb-3 position-relative">
                             <input
                                 className="form-control"
-                                type={showPassword ? "text" : "password"} // Toggle input type based on showPassword state
+                                type={showPassword ? "text" : "password"}
                                 name="password"
                                 placeholder="Password"
                                 onChange={handleChange}
                                 required
                             />
-                            {/* Eye icon to toggle password visibility */}
+
                             <div
                                 className="position-absolute"
                                 style={{ top: "10px", right: "10px", cursor: "pointer" }}
@@ -120,7 +117,7 @@ const LoginForm = () => {
                             </div>
                         </div>
 
-                        <button type="submit" className="btn btn-success w-100" disabled={mutation.isPending}>
+                        <button type="submit" className="btn  w-100" style={{ backgroundColor: "#9279D2", color: "white" }} disabled={mutation.isPending}>
                             {mutation.isPending ? "signing in..." : "Login"}
                         </button>
 
@@ -128,7 +125,7 @@ const LoginForm = () => {
 
                     <p className="text-center mt-3">
                         Don't have an account?{" "}
-                        <a href="/register" className="text-decoration-none text-primary">
+                        <a href="/register" className="text-decoration-none fw-bold" style={{ color: "#C88BE8" }}>
                             Sign Up
                         </a>
                     </p>

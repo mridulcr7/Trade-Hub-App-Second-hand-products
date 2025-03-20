@@ -21,11 +21,11 @@ export const getMessagesByUserIdController = async (req: Request, res: Response)
     const chat = await createChatService(currentUserId, targetUserId);
 
     // Then fetch messages using the chat ID
-    const messages = await getMessagesByChatIdService(chat.chat_id);
+    const messages = await getMessagesByChatIdService(chat);
 
     res.status(200).json({
         success: true,
         data: messages,
-        chat_id: chat.chat_id,
+        chat_id: chat,
     });
 };
