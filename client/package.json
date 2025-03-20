@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:css": "postcss src/index.css -o src/tailwind.css",
+    "build:css": "postcss src/index.css -o src/tailwind.css"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
@@ -35,7 +35,7 @@
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@eslint/js": "^9.19.0",
-    "@types/react": "^19.0.12",
+    "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
