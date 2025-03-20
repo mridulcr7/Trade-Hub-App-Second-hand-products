@@ -39,6 +39,7 @@ export const createUserController = async (req: Request, res: Response) => {
 
 
 export const LoginUserController = async (req: Request, res: Response) => {
+    console.log("login user controller")
     try {
         const { email, password } = req.body;
         const getuser = await loginUserService({ email, password });

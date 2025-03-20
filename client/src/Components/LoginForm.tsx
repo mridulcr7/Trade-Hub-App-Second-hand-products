@@ -22,7 +22,10 @@ const LoginForm = () => {
 
 
     const logindata = async (formData: { email: string; password: string }) => {
-        const response = await axios.post("http://localhost:5000/user/login", formData);
+        console.log("API URL:", import.meta.env.VITE_API_URL);
+
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/login`, formData);
+
         return response.data
 
     }
@@ -65,6 +68,7 @@ const LoginForm = () => {
                     const backendMessage = error.response?.data?.message || "An unexpected error occurred.";
                     setErrorMessage(`❌ ${backendMessage}`);
                 } else {
+                    console.log("Error:", error);
                     setErrorMessage("❌ Something went wrong. Please try again.");
                 }
             },

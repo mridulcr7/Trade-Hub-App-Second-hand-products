@@ -20,7 +20,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // }
 
 const fetchProduct = async (productId: string) => {
-    const response = await axios.get(`http://localhost:5000/product/${productId}`);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/product/${productId}`);
     return response.data.product;
 };
 
@@ -28,7 +28,7 @@ const updateProduct = async (updatedFields: any) => {
     const token = localStorage.getItem("authToken");
     if (!token) throw new Error("User not authenticated.");
 
-    return axios.put("http://localhost:5000/product/update", updatedFields, {
+    return axios.put(`${import.meta.env.VITE_API_URL}/product/update`, updatedFields, {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

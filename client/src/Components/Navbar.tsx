@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaPlus, FaUser, FaEnvelope } from "react-icons/fa";
+import { FaPlus, FaUser ,FaEnvelope} from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Navbar = () => {
@@ -91,23 +91,24 @@ const Navbar = () => {
                                         Add Product
                                     </Link>
                                 </li>
-                                <li className="nav-item me-5">
-                                    <Link to="/chats" className="nav-link d-flex align-items-center text-white fw-semibold">
-                                        <div
-                                            className="d-flex align-items-center justify-content-center"
-                                            style={{
-                                                width: "40px",
-                                                height: "40px",
-                                                backgroundColor: "#fff",
-                                                borderRadius: "50%",
-                                                marginRight: "8px",
-                                            }}
-                                        >
-                                            <FaEnvelope style={{ color: "#9279D2", fontSize: "18px" }} />
-                                        </div>
-                                        View Chats
-                                    </Link>
-                                </li>
+
+                                    <li className="nav-item me-5">
+                                        <Link to="/chats" className="nav-link d-flex align-items-center text-white fw-semibold">
+                                            <div
+                                                className="d-flex align-items-center justify-content-center"
+                                                style={{
+                                                    width: "40px",
+                                                    height: "40px",
+                                                    backgroundColor: "#fff",
+                                                    borderRadius: "50%",
+                                                    marginRight: "8px",
+                                                }}
+                                            >
+                                                <FaEnvelope style={{ color: "#9279D2", fontSize: "18px" }} />
+                                            </div>
+                                            View Chats
+                                        </Link>
+                                    </li>
 
 
                                 <li

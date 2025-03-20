@@ -18,7 +18,7 @@ interface UserProfile {
 }
 
 const fetchUserDetails = async (id: string): Promise<UserProfile> => {
-    const response = await fetch("http://localhost:5000/user/profile", {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/user/profile`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
@@ -33,7 +33,7 @@ const fetchUserDetails = async (id: string): Promise<UserProfile> => {
 };
 
 const updateProfile = async (formData: FormData) => {
-    const response = await axios.put("http://localhost:5000/user/profile", formData, {
+    const response = await axios.put(`${import.meta.env.VITE_API_URL}/user/profile`, formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         },

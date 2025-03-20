@@ -51,7 +51,7 @@ const ChatWindow: React.FC = () => {
     useEffect(() => {
         if (!user?.id) return;
 
-        socketRef.current = io('http://localhost:5000');
+        socketRef.current = io(`${import.meta.env.VITE_API_URL}`);
 
         // Set user as online
         socketRef.current.emit('userConnected', user.id);
@@ -98,7 +98,7 @@ const ChatWindow: React.FC = () => {
         const fetchMessages = async () => {
             try {
                 const token = localStorage.getItem('authToken');
-                const response = await axios.get(`http://localhost:5000/chat/${chatId}/messages`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/chat/${chatId}/messages`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 console.log('Fetched messages:', response.data);

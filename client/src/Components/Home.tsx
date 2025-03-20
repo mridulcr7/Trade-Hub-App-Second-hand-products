@@ -44,7 +44,7 @@ const fetchProducts = async ({ pageParam = 1, queryKey }: { pageParam: number; q
     // Check if filters are empty (i.e., no search performed)
     const isRandom = !filters.category && !filters.selectedState;
 
-    const response = await axios.post("http://localhost:5000/product/get-products", {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/product/get-products`, {
         ...filters,
         page: pageParam,
         limit: 3, // Fetch 3 products per request

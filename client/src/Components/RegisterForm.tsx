@@ -18,7 +18,7 @@ const RegisterForm = () => {
     };
 
     const registerapi = async (formDataToSend: FormData) => {
-        const response = await axios.post("http://localhost:5000/user/register", formDataToSend, {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/register`, formDataToSend, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },

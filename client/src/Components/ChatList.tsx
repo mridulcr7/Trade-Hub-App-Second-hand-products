@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import * as React from "react";
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';  // Add this import
@@ -41,7 +42,7 @@ const ChatList: React.FC = () => {
             }
 
             try {
-                const response = await axios.get('http://localhost:5000/chat/user-chats', {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/chat/user-chats`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -61,7 +62,7 @@ const ChatList: React.FC = () => {
     useEffect(() => {
         if (!user?.id) return;
 
-        const socket = io('http://localhost:5000');
+        const socket = io(`${import.meta.env.VITE_API_URL}`);
 
         // Connect and set user online
         socket.emit('userConnected', user.id);
@@ -89,11 +90,12 @@ const ChatList: React.FC = () => {
             socket.emit('checkOnlineStatus', [...new Set(allParticipantIds)]);
         }
 
-        socket.on('online-statuses', (statuses) => {
+        socket.on('online-statuses', (statuses: { userId: string; isOnline: boolean }[]) => {
             setOnlineUsers(new Set(
-                statuses.filter(s => s.isOnline).map(s => s.userId)
+                statuses.filter((s) => s.isOnline).map((s) => s.userId)
             ));
         });
+
 
         // Handle reconnection
         socket.on('connect', () => {

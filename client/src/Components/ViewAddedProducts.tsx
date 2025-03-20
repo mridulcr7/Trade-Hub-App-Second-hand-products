@@ -41,7 +41,7 @@ const ViewAddedProducts = () => {
                 const decoded = jwtDecode<DecodedToken>(token);
                 const userId = decoded.id;
 
-                const response = await fetch("http://localhost:5000/product/user", {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/product/user`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

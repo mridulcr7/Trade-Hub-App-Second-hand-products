@@ -37,7 +37,7 @@ const ViewDetails: React.FC = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/product/${id}`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/product/${id}`);
                 const data = await response.json();
                 //console.log("Product Data:", data); // ✅ Log entire response
 
@@ -68,7 +68,7 @@ const ViewDetails: React.FC = () => {
                     return;
                 }
 
-                const response = await fetch("http://localhost:5000/user/profile", {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/user/profile`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -99,7 +99,7 @@ const ViewDetails: React.FC = () => {
                 return;
             }
 
-            const response = await fetch(`http://localhost:5000/chat/user/${seller.id}/messages`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/chat/user/${seller.id}/messages`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
